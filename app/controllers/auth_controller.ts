@@ -1,3 +1,4 @@
+import ClassRoom from '#models/classRoom';
 import User from '#models/user';
 import { Hash } from '@adonisjs/core/hash';
 import type { HttpContext } from '@adonisjs/core/http'
@@ -5,7 +6,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 export default class AuthController {
     async register({request, response}: HttpContext) {
         const {fullName, email, password, registration, date_of_birth, type} = request.all();
-
+        console.log('teste')
         try {
             const user = await User.create({fullName, email, password, registration, date_of_birth,type})
 
