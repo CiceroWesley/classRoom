@@ -23,6 +23,15 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null })
   declare password: string
 
+  @column() 
+  declare registration: number
+
+  @column()
+  declare date_of_birth: string
+  
+  @column()
+  declare type: number
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
