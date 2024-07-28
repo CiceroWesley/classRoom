@@ -5,8 +5,9 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class AuthController {
     async register({request, response}: HttpContext) {
+
+        // colocar para apenas o adm registar o usuário e colocar seeder
         const {fullName, email, password, registration, date_of_birth, type} = request.all();
-        console.log('teste')
         try {
             const user = await User.create({fullName, email, password, registration, date_of_birth,type})
 
