@@ -29,7 +29,8 @@ router.group(() => {
 
 router.group(() => {
   router.post('create', [RoomsController, 'store']).use(middleware.auth())
-  router.post('assignUser', [RoomsController, 'assignUser']).use(middleware.auth())
+  router.post('assignuser', [RoomsController, 'assignUser']).use(middleware.auth())
+  router.delete('unAssignUser', [RoomsController, 'unAssignUser']).use(middleware.auth())
   router.get('show/:id', [RoomsController, 'show']).use(middleware.auth())
   router.patch('update/:id', [RoomsController, 'update']).use(middleware.auth())
   router.delete('delete/:id', [RoomsController, 'destroy']).use(middleware.auth())

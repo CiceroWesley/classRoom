@@ -25,6 +25,8 @@ export default class UsersController {
           }
     }
 
+    
+
 
 
     async update({request, response, auth}: HttpContext){

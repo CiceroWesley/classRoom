@@ -121,22 +121,66 @@ export default class RoomsController {
                 if(!student || !classRoom){
                     throw('Student or classroom does not exist')
                 }
+
+                if(student.type == 0){
+                    throw('Student can not be adm')
+                }
+
                 if(classRoom.availability){
+
+                    const studentRoomExists = await StudentRoom.findManyBy({id_user, id_classroom})
+                    if(studentRoomExists){
+                        throw('This student already belongs to this class')
+                    }
+
+
                     const studentRoom = await StudentRoom.create({id_user, id_classroom})
                     if(!studentRoom){
                         throw('Error creating studentRoom')
                     }
 
                     const studentInClassRoom = await db.from('student_rooms').where('id_classroom', id_classroom).count('*','total')
-                    if(studentInClassRoom[0].total >= classRoom.capacity){
+                    if(studentInClassRoom[0].total == classRoom.capacity){
                         classRoom.availability = false
-                        classRoom.save()
+                        await classRoom.save()
                     }
                     
 
                     return response.created(studentRoom)
                 } else {
                     throw('Classroom is not availabity')
+                }
+                
+            } else {
+                throw('Level of unauthorized access')
+            }
+            
+          } catch (error) {
+            return response.unauthorized({error})
+          }
+
+    }
+
+    async unAssignUser({request, response, auth}: HttpContext){
+        try {
+            // verify if is adm and authorized
+            const user = auth.getUserOrFail();
+            
+            if(user && user.type === 0){
+                const {id_user, id_classroom} = request.all();
+
+                const student = await User.findByOrFail(id_user);
+                const classRoom = await ClassRoom.findByOrFail(id_classroom)
+
+                if(!student || !classRoom){
+                    throw('Student or classroom does not exist')
+                }
+
+                const studentRoom = await StudentRoom.findManyBy({id_user, id_classroom})
+
+                if(studentRoom){
+                    await studentRoom[0].delete()
+                    return response.ok(studentRoom[0])
                 }
                 
             } else {
