@@ -29,7 +29,10 @@ router.group(() => {
 
 router.group(() => {
   router.post('create', [RoomsController, 'store']).use(middleware.auth())
+  router.post('assignUser', [RoomsController, 'assignUser']).use(middleware.auth())
+  router.get('show/:id', [RoomsController, 'show']).use(middleware.auth())
   router.patch('update/:id', [RoomsController, 'update']).use(middleware.auth())
+  router.delete('delete/:id', [RoomsController, 'destroy']).use(middleware.auth())
 }).prefix('classroom')
 
 router.get('me', async ({auth, response}) => {
