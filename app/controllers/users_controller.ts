@@ -5,6 +5,26 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { userInfo } from 'os';
 
 export default class UsersController {
+    async showAll({request, response, auth}: HttpContext){
+        
+        try {
+            // verify if is adm and authorized
+            const user = auth.getUserOrFail();
+            if(user && user.type === 0){
+                
+                // get user by id
+                const user = await User.all();
+
+                return response.ok(user)
+                
+            } else {
+                throw('Level of unauthorized access')
+            }
+            
+          } catch (error) {
+            return response.unauthorized({error})
+          }
+    }
 
     async show({request, response, auth}: HttpContext){
         const id = request.param('id')

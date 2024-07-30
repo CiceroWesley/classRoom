@@ -5,6 +5,28 @@ import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db';
 
 export default class RoomsController {
+    async showAll({request, response, auth}: HttpContext){
+        
+        try {
+            // verify if is adm and authorized
+            const user = auth.getUserOrFail();
+            if(user && user.type === 0){
+                
+                // get user by id
+                const classRoom = await ClassRoom.all();
+
+                return response.ok(classRoom)
+                
+            } else {
+                throw('Level of unauthorized access')
+            }
+            
+          } catch (error) {
+            return response.unauthorized({error})
+          }
+    }
+
+
     async show({request, response, auth}: HttpContext){
         const id = request.param('id')
         
@@ -66,10 +88,13 @@ export default class RoomsController {
                 // update classroom by id
                 const classRoom = await ClassRoom.findOrFail(id)
                 classRoom.number = body.number
-                if(body.capacity >= classRoom.capacity){
+
+                const studentRoom = await StudentRoom.findManyBy('id_classroom', id)
+
+                if(studentRoom && body.capacity > studentRoom.length){
                     classRoom.capacity = body.capacity
                 } else {
-                    msg = 'The new capacity must be greater or equal than the current one'
+                    msg = 'The new capacity must be greater than the current one'
                 }
                 
 

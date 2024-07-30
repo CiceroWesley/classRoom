@@ -20,6 +20,7 @@ router.group(() => {
   router.post('register', [AuthController, 'register'])
   router.post('login', [AuthController, 'login'])
 
+  router.get('show', [UsersController, 'showAll']).use(middleware.auth())
   router.get('showclasses',[UsersController, 'showClasses']).use(middleware.auth())
   router.get('show/:id',[UsersController, 'show']).use(middleware.auth())
   router.patch('update/:id',[UsersController, 'update']).use(middleware.auth())
@@ -33,6 +34,7 @@ router.group(() => {
   router.post('assignuser', [RoomsController, 'assignUser']).use(middleware.auth())
   router.delete('unassignuser', [RoomsController, 'unAssignUser']).use(middleware.auth())
   router.get('show/:id', [RoomsController, 'show']).use(middleware.auth())
+  router.get('show', [RoomsController, 'showAll']).use(middleware.auth())
   router.patch('update/:id', [RoomsController, 'update']).use(middleware.auth())
   router.delete('delete/:id', [RoomsController, 'destroy']).use(middleware.auth())
 }).prefix('classroom')

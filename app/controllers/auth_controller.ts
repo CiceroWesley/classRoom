@@ -7,9 +7,9 @@ export default class AuthController {
     async register({request, response}: HttpContext) {
 
         // colocar para apenas o adm registar o usuário e colocar seeder
-        const {fullName, email, password, registration, date_of_birth, type} = request.all();
+        const {fullName, email, password, registration, date_of_birth} = request.all();
         try {
-            const user = await User.create({fullName, email, password, registration, date_of_birth,type})
+            const user = await User.create({fullName, email, password, registration, date_of_birth})
 
             if(!user){
                 throw('Error creating user')
