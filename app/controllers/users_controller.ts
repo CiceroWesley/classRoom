@@ -1,5 +1,8 @@
+import ClassRoom from '#models/classRoom';
+import StudentRoom from '#models/studentRoom';
 import User from '#models/user';
 import type { HttpContext } from '@adonisjs/core/http'
+import { userInfo } from 'os';
 
 export default class UsersController {
 
@@ -25,9 +28,45 @@ export default class UsersController {
           }
     }
 
-    
+    async showClasses({request, response, auth}: HttpContext){
+        try {
+            // verify if is student and authorized
+            const user = auth.getUserOrFail();
+            if(user && user.type === 1){
+                
+                // get user by id
+                const studentRoom = await StudentRoom.findManyBy('id_user', user?.id)
 
+                let classes:number[] = [];
+                if(studentRoom){
+                    
+                    const classPromises = studentRoom.map(async (stuRo) => {
+                        const classRoom = await ClassRoom.find(stuRo.id_classroom);
+                        if (classRoom) {
+                            return classRoom.number;
+                        }
+                        return null;
+                    });
 
+                    const classNumbers = await Promise.all(classPromises);
+                    const filteredClasses = classNumbers.filter(num => num !== null);
+
+                    
+                    return response.ok({ user: user.fullName, classes: filteredClasses });
+
+                }
+                // pegar o numero da turma da relação do student room
+                // criar seeder
+                
+                
+            } else {
+                throw('Level of unauthorized access')
+            }
+            
+          } catch (error) {
+            return response.unauthorized({error})
+          }
+    }
 
     async update({request, response, auth}: HttpContext){
         const id = request.param('id')

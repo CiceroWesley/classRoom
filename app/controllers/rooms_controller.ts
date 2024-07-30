@@ -114,10 +114,10 @@ export default class RoomsController {
             
             if(user && user.type === 0){
                 const {id_user, id_classroom} = request.all();
-
-                const student = await User.findByOrFail(id_user);
-                const classRoom = await ClassRoom.findByOrFail(id_classroom)
-
+                
+                const student = await User.findByOrFail('id', id_user);
+                const classRoom = await ClassRoom.findByOrFail('id', id_classroom)
+                
                 if(!student || !classRoom){
                     throw('Student or classroom does not exist')
                 }
@@ -129,7 +129,7 @@ export default class RoomsController {
                 if(classRoom.availability){
 
                     const studentRoomExists = await StudentRoom.findManyBy({id_user, id_classroom})
-                    if(studentRoomExists){
+                    if(studentRoomExists.length != 0){
                         throw('This student already belongs to this class')
                     }
 
@@ -169,8 +169,8 @@ export default class RoomsController {
             if(user && user.type === 0){
                 const {id_user, id_classroom} = request.all();
 
-                const student = await User.findByOrFail(id_user);
-                const classRoom = await ClassRoom.findByOrFail(id_classroom)
+                const student = await User.findByOrFail('id', id_user);
+                const classRoom = await ClassRoom.findByOrFail('id', id_classroom)
 
                 if(!student || !classRoom){
                     throw('Student or classroom does not exist')
@@ -178,9 +178,11 @@ export default class RoomsController {
 
                 const studentRoom = await StudentRoom.findManyBy({id_user, id_classroom})
 
-                if(studentRoom){
+                if(studentRoom.length > 0){
                     await studentRoom[0].delete()
                     return response.ok(studentRoom[0])
+                } else {
+                    throw('This relation does not exist')
                 }
                 
             } else {
