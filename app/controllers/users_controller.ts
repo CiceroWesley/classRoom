@@ -101,6 +101,7 @@ export default class UsersController {
                 const user = await User.findOrFail(id)
                 user.fullName = body.fullName
                 user.email = body.email
+                user.password = body.password
                 user.registration = body.registration
                 user.date_of_birth = body.date_of_birth
 
